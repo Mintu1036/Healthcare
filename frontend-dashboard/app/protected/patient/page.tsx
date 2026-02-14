@@ -85,7 +85,18 @@ export default function PatientDashboard() {
     } else {
       setReportUrl(publicUrl)
       setFilePath(newFilePath)
+      await fetch('http://localhost:8000/extract-ehr', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    fileUrl: publicUrl,
+    patientId
+  })
+})
     }
+
+
+    
 
     setUploading(false)
   }

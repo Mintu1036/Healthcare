@@ -1,8 +1,10 @@
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 export default function PatientScreen() {
   const navigate = useNavigate()
+  const [report, setReport] = useState("");
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -18,7 +20,10 @@ export default function PatientScreen() {
         Logout
       </button>
 
-      <h1 className="text-2xl font-bold mt-4">Patient Dashboard</h1>
+      <h1 className="text-2xl font-bold mt-4">
+        <h1>{report === "" ? "No report available yet." : `Your Report: ${report}`}</h1>
+        <h1>Patient Dashbof,sdfard</h1>
+      </h1>
     </div>
   )
 }

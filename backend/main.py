@@ -110,6 +110,8 @@ class TriageInput(BaseModel):
     diastolic_bp: int | None = None
     temperature: float | None = None
     pre_existing_conditions: str | None = None
+    recommended_department_id : str | None = None
+    risk_level : float | None = None
 
 
 # ==============================
@@ -147,6 +149,14 @@ def triage(data: TriageInput):
         department_id = random.choice(DEPARTMENT_IDS)
 
         explanation = "Risk estimated from symptoms and available vitals."
+
+
+        insertResponse = supabase.table("ai_predictions").insert({
+                "patient_id": "demo-patient-id", 
+                risk_level : 0.3,
+                recommended_department_id : 
+            
+         }).execute()
 
         return {
             "risk_score": risk_score,

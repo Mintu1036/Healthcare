@@ -1,5 +1,3 @@
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
@@ -14,10 +12,11 @@ export async function POST(req: NextRequest) {
       heart_rate,
       systolic_bp,
       diastolic_bp,
-      temperature
+      temperature,
+      pre_existing_conditions
     } = body
 
-    // 1️⃣ store triage session
+    // 1️⃣ Store triage session
     const { data: triage, error: triageError } = await supabase
       .from('triage_sessions')
       .insert({
@@ -26,15 +25,23 @@ export async function POST(req: NextRequest) {
         heart_rate,
         systolic_bp,
         diastolic_bp,
-        temperature
+        temperature,
+        pre_existing_conditions
       })
       .select()
       .single()
 
-    if (triageError) throw triageError
+    if (triageError) {
+      console.error("Supabase Triage Error:", triageError)
+      throw new Error(`Database error: ${triageError.message}`)
+    }
 
-    // 2️⃣ call AI service
-    const aiRes = await fetch(process.env.AI_TRIAGE_URL!, {
+    // 2️⃣ Call AI service (with safety check)
+    if (!process.env.AI_TRIAGE_URL) {
+      throw new Error("AI_TRIAGE_URL is not defined in environment variables.")
+    }
+
+    const aiRes = await fetch(process.env.AI_TRIAGE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -42,32 +49,51 @@ export async function POST(req: NextRequest) {
         heart_rate,
         systolic_bp,
         diastolic_bp,
-        temperature
+        temperature,
+        pre_existing_conditions
       })
     })
 
-    const aiData = await aiRes.json()
+    if (!aiRes.ok) {
+      const errorText = await aiRes.text()
+      throw new Error(`AI Service failed (${aiRes.status}): ${errorText}`)
+    }
 
+    const aiData = await aiRes.json()
     const { risk_score, department_id, explanation } = aiData
 
-    // 3️⃣ store AI prediction
-    await supabase.from('ai_predictions').insert({
+    // 3️⃣ Store AI prediction
+    const { error: aiStoreError } = await supabase.from('ai_predictions').insert({
       triage_id: triage.triage_id,
       risk_score,
       department_id,
       explanation
     })
+    
+    if (aiStoreError) console.error("AI Storage Error:", aiStoreError)
 
-    // 4️⃣ add to queue
-    await supabase.from('patient_queue').insert({
+    // 4️⃣ Add to queue
+    const { error: queueError } = await supabase.from('patient_queue').insert({
       patient_id,
       triage_id: triage.triage_id,
       department_id,
       risk_score
     })
 
-    return NextResponse.json({ success: true, risk_score, department_id })
+    if (queueError) console.error("Queue Storage Error:", queueError)
+
+    return NextResponse.json({ 
+      success: true, 
+      risk_score, 
+      department_id, 
+      explanation 
+    })
+
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    console.error("Critical Triage Route Error:", err.message)
+    return NextResponse.json(
+      { error: err.message || "Internal Server Error" }, 
+      { status: 500 }
+    )
   }
 }

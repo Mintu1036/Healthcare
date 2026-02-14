@@ -109,6 +109,7 @@ class TriageInput(BaseModel):
     systolic_bp: int | None = None
     diastolic_bp: int | None = None
     temperature: float | None = None
+    pre_existing_conditions: str | None = None
 
 
 # ==============================

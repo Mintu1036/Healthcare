@@ -52,7 +52,7 @@ def run_mlp_inference(sample_df, visualize=True):
     #     shap.plots.waterfall(explanation)
     #     plt.show()
 
-    return prediction, contributions
+    return prediction, contributions, explainer.expected_value
 
 
 # ----------------------------

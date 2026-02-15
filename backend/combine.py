@@ -22,7 +22,7 @@ vitals = {
 # ----------------------------
 
 zeroshot_score = compute_risk_score(text)
-vitals_score, contributions = run_mlp_inference(pd.DataFrame([vitals]))
+vitals_score, contributions, base_value = run_mlp_inference(pd.DataFrame([vitals]))
 
 final_Score = 0.5 * zeroshot_score[0] + 0.5 * vitals_score
 
@@ -36,11 +36,13 @@ print("Final Combined Risk Score:", final_Score)
 # ----------------------------
 
 final_json = generate_explanation_structured(
-    text=text,
-    zeroshot_score=zeroshot_score,
-    vitals_score=vitals_score,
-    contributions=contributions,
-    final_score=final_Score
+    text,
+    zeroshot_score,
+    vitals_score,
+    contributions,
+    final_Score,
+    base_value,
+    vitals
 )
 
 print("\nFinal Structured Output:\n")

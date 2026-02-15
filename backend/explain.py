@@ -41,15 +41,76 @@ def generate_explanation_structured(
     zeroshot_score,
     vitals_score,
     contributions,
-    final_score
+    final_score,
+    base_value,
+    input_values  # <-- pass original vitals dict here
 ):
 
-    risk_score_int = int(np.clip(final_score * 100, 0, 100))
-    shap_values = [int(round(v * 100)) for v in contributions.values()]
+    # --------------------------------------------------
+    # Risk score (keep your logic)
+    # --------------------------------------------------
 
-    # ==================================================
-    # 1️⃣ EXPLANATION PROMPT (Pure Reasoning)
-    # ==================================================
+    risk_score_int = int(np.clip(final_score * 100, 0, 100))
+
+    # --------------------------------------------------
+    # Build SHAP structured dict for waterfall
+    # --------------------------------------------------
+
+    base_value = float(base_value)
+    prediction = float(final_score)
+
+    # Build feature list
+    features = [
+        {
+            "name": key,
+            "value": float(input_values[key]),
+            "contribution": float(value)
+        }
+        for key, value in contributions.items()
+    ]
+
+    # Sort by absolute importance
+    features_sorted = sorted(
+        features,
+        key=lambda x: abs(x["contribution"]),
+        reverse=True
+    )
+
+    # Precompute waterfall steps
+    steps = []
+    current = base_value
+
+    steps.append({
+        "label": "Base Value",
+        "start": 0,
+        "end": base_value
+    })
+
+    for f in features_sorted:
+        start = current
+        end = current + f["contribution"]
+
+        steps.append({
+            "label": f["name"],
+            "start": start,
+            "end": end
+        })
+
+        current = end
+
+    steps.append({
+        "label": "Final Prediction",
+        "start": 0,
+        "end": prediction
+    })
+
+    # Optional integrity check
+    if abs(current - prediction) > 1e-3:
+        print("⚠️ Warning: SHAP sum mismatch")
+
+    # --------------------------------------------------
+    # 1️⃣ EXPLANATION PROMPT
+    # --------------------------------------------------
 
     explanation_system_prompt = """
 You are a medical explainability assistant.
@@ -98,9 +159,9 @@ Final Combined Risk Score:
 
     explanation_text = explanation_response.choices[0].message.content.strip()
 
-    # ==================================================
-    # 2️⃣ DEPARTMENT SELECTION PROMPT (Constrained)
-    # ==================================================
+    # --------------------------------------------------
+    # 2️⃣ Department Selection
+    # --------------------------------------------------
 
     department_system_prompt = f"""
 You are a medical triage router.
@@ -136,8 +197,6 @@ Final Risk Score:
     )
 
     department_name = department_response.choices[0].message.content.strip()
-
-    # Clean possible formatting noise
     department_name = department_name.replace("\n", "").strip()
 
     department_id = get_department_id(department_name)
@@ -147,13 +206,18 @@ Final Risk Score:
             f"Invalid department returned by LLM: '{department_name}'"
         )
 
-    # ==================================================
-    # Final Deterministic JSON
-    # ==================================================
+    # --------------------------------------------------
+    # Final JSON
+    # --------------------------------------------------
 
     return {
         "risk_score": risk_score_int,
-        "shap_values": shap_values,
+        "shap": {
+            "base_value": base_value,
+            "prediction": prediction,
+            "features": features_sorted,
+            "steps": steps
+        },
         "explainability": explanation_text,
         "recommended_department": department_id
     }

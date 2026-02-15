@@ -1,0 +1,51 @@
+department_id,name,description
+0a0e0bbf-0d64-4963-bb80-bb260a51c4a9,Infectious Diseases,Management of communicable diseases
+129d7548-8fee-4b60-8016-dc372b1fe4c2,Clinical Psychology,Therapy and psychological assessments
+198c3085-66a6-4f92-bbc1-0cc817b03196,Gastroenterology,"Digestive system, liver, and pancreatic disorders"
+1a109308-a4d5-48d7-af7b-03995e7c4506,Rehabilitation Medicine,Post-injury and stroke recovery
+1c9c382d-c79d-4da6-b9fd-42d2b1f2fe4f,Toxicology,Poisoning and overdose management
+1d2710b5-d6dd-47f5-84db-05db04ef421c,Urology,Urinary tract and male reproductive system
+22d76ccd-35b3-4a6f-9ace-cff6b20316b7,Nephrology,Kidney diseases and dialysis management
+274b0317-039e-4430-a1f1-1933f3aeb38f,Pediatrics,"Medical care for infants, children, and adolescents"
+28c64e5e-5ef6-4ddf-a909-c98ea0c55cb0,Endocrinology,Hormonal disorders such as diabetes and thyroid disease
+2f3302d6-b531-417c-b2a4-436eaf9e037e,Pain Management,Chronic pain treatment
+35a998e0-610b-4d6c-8b5b-7c5553d07a53,ENT,"Ear, nose, and throat disorders"
+3c870d8f-a57c-4cb7-bcba-ed1261680abb,Radiology,Imaging services and diagnostic scans
+499ea1b3-9b5b-40b2-a43b-7e3ceb0eda3f,Thoracic Surgery,Chest and lung surgical procedures
+5277a8cb-d2d6-4c2a-a8dc-855a67a058e1,Oncology,Cancer diagnosis and treatment
+5ddbff2d-0dcc-442d-b052-7b4fe0073b9a,Physiotherapy,Physical rehabilitation and mobility therapy
+5ece5f31-708d-49c2-9468-627a08db252b,Sports Medicine,Athletic injuries and rehabilitation
+61c49cba-d1ea-4233-8f13-b1279a4a259a,Orthopedics,"Bone, joint, ligament, and musculoskeletal injuries"
+61ff3888-b7fa-4c78-9ed2-35243960adf8,Public Health,Population health and epidemiology
+6a37f08c-41ab-4204-b745-dfce7e42c106,Neurology,"Brain, spinal cord, stroke, and nervous system disorders"
+703be28b-bc99-49e4-af4b-0cdd3d68edfc,Emergency,Immediate care for life-threatening conditions and trauma cases
+722a9f5b-141f-4760-bf62-55fa4fe59eb5,Vascular Surgery,Blood vessel and circulation disorders
+726499ea-8166-485d-93af-51b6eab976ba,Gynecology,Women’s reproductive and hormonal health services
+7c375319-6422-471b-a6cf-3bdaaba283a5,Rheumatology,Autoimmune and joint diseases
+7e785af0-3d05-42cc-8416-df6b36369a8f,Maxillofacial Surgery,Facial trauma and jaw surgeries
+81bbe5a0-dfaf-4076-ae27-4a3b87aadeaa,Psychiatry,Mental health and behavioral disorders
+8bc0a7ce-0a41-4282-bb33-9ec2ed491901,Pathology,Laboratory diagnostics and biopsy analysis
+942897ac-3fe0-4960-a650-e84ff133b9ae,Anesthesiology,Pain management and anesthesia care
+9bf4f534-c6a0-49fd-a168-f320838dad76,Telemedicine,Remote consultation services
+a05afad7-ac75-4696-98e3-cbb7644d1576,Neonatology,Newborn intensive care
+a334f154-3f8d-4087-996d-f88802134bba,Colorectal Surgery,Colon and rectal diseases
+ab1d50e0-5262-4689-919b-b7aa13343a50,General Medicine,Primary care for common illnesses and routine health evaluation
+ae42967a-cb3e-4f65-ac60-c24a6a60ef26,General Surgery,Abdominal and routine surgical procedures
+b5480c90-a9da-4a3b-9158-3c8e187f12f8,Immunology,Immune system and allergy disorders
+b59d12d6-6e50-421a-b133-a4d40e0fddbc,Plastic Surgery,Reconstructive and cosmetic surgery
+b6a0f68c-ebfa-49b0-8f25-d47ae08b81a3,Bariatric Surgery,Weight loss surgical interventions
+becc414a-2a1b-4547-b828-d5e7f0841f19,Palliative Care,End-of-life comfort care
+bfabb37c-fe0a-4329-a685-13ad4d5c1096,Pulmonology,Respiratory diseases including asthma and pneumonia
+c53131c0-a075-42e4-b8e1-e40bdb68f31c,Ophthalmology,Eye and vision care
+d02ddcec-3d47-42e9-abc6-d5f55249c773,Occupational Therapy,Functional rehabilitation and recovery
+d5836718-9b2e-4dbd-821d-fb1e9dada8fd,Dermatology,"Skin, hair, and nail disorders"
+d6936dbe-54d3-470e-aff8-87513d960e27,Preventive Medicine,Screening and disease prevention
+dca17f52-b184-4a3b-a496-ae21e53a2796,Dentistry,Oral health and dental procedures
+ddc02c14-698c-44db-92b8-887c956c7b37,Diabetology,Diabetes-specific management
+dde985ac-c636-48db-ae88-f1c53dac263d,Sleep Medicine,Sleep disorders and apnea treatment
+de3ce1d2-3935-4b97-b683-d041986ea24c,Geriatrics,Healthcare for elderly patients
+de92a653-9d17-4724-8039-b876097b729b,Nuclear Medicine,Radioisotope imaging and therapy
+e572c181-7f7f-4383-96a4-f93ba93a02dd,Obstetrics,Pregnancy and childbirth care
+e7f8cd84-4d15-4974-b177-cbb3b1a9d8f5,Allergy & Asthma,Allergic reactions and asthma care
+e818f375-3596-4f14-87b1-aba37b7c18cc,Cardiology,Heart and cardiovascular system disorders and interventions
+f700790e-5418-44f2-b402-de6f0e49a63f,Hematology,Blood disorders and anemia management

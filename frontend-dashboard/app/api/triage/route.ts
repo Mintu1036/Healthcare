@@ -36,6 +36,8 @@ export async function POST(req: NextRequest) {
       throw new Error(`Database error: ${triageError.message}`)
     }
 
+    console.log("Triage session stored with ID:", triage)
+
     // 2️⃣ Call AI service (with safety check)
     if (!process.env.AI_TRIAGE_URL) {
       throw new Error("AI_TRIAGE_URL is not defined in environment variables.")
@@ -60,33 +62,38 @@ export async function POST(req: NextRequest) {
     }
 
     const aiData = await aiRes.json()
-    const { risk_score, department_id, explanation } = aiData
+    const { risk_level, department_id, explainability,shap_values } = aiData
+    console.log("AI Response:", aiData, "for triage ID:", triage.triage_id)
 
+
+    const triage_id = triage.triage_id
+    
     // 3️⃣ Store AI prediction
     const { error: aiStoreError } = await supabase.from('ai_predictions').insert({
       triage_id: triage.triage_id,
-      risk_score,
-      department_id,
-      explanation
+      risk_level: risk_level / 100,
+      recommended_department_id: department_id,
+      explainability,
+      shap_values 
     })
     
     if (aiStoreError) console.error("AI Storage Error:", aiStoreError)
 
-    // 4️⃣ Add to queue
-    const { error: queueError } = await supabase.from('patient_queue').insert({
-      patient_id,
-      triage_id: triage.triage_id,
-      department_id,
-      risk_score
-    })
+    // // 4️⃣ Add to queue
+    // const { error: queueError } = await supabase.from('patient_queue').insert({
+    //   patient_id,
+    //   triage_id: triage.triage_id,
+    //   department_id,
+    //   risk_score
+    // })
 
-    if (queueError) console.error("Queue Storage Error:", queueError)
+    // if (queueError) console.error("Queue Storage Error:", queueError)
 
     return NextResponse.json({ 
       success: true, 
-      risk_score, 
+      risk_score: risk_level, 
       department_id, 
-      explanation 
+      explainability, 
     })
 
   } catch (err: any) {

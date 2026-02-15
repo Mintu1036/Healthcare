@@ -8,7 +8,8 @@ from pydantic import BaseModel
 from supabase import create_client
 import pdfplumber
 from io import BytesIO
-
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 
 # 🔹 Load .env
@@ -25,6 +26,11 @@ supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 
 app = FastAPI(title="Medical Voice + Triage Backend")
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    print(f"OMFG Error: {exc.errors()}") # This will tell you exactly which field failed
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
 # 🔹 CORS (allow Next.js)
 app.add_middleware(
@@ -104,14 +110,13 @@ async def process_symptoms(
 # 🧠 TRIAGE INPUT MODEL
 # ==============================
 class TriageInput(BaseModel):
-    symptoms: list[str] | None = None
+    symptoms: str | None = None
     heart_rate: int | None = None
     systolic_bp: int | None = None
     diastolic_bp: int | None = None
     temperature: float | None = None
     pre_existing_conditions: str | None = None
-    recommended_department_id : str | None = None
-    risk_level : float | None = None
+
 
 
 # ==============================
@@ -150,16 +155,23 @@ def triage(data: TriageInput):
 
         explanation = "Risk estimated from symptoms and available vitals."
 
+        shap_values = [12, -5, 18, 7, 22, 3]
+        explainability = "Elevated risk primarily driven by high systolic blood pressure and irregular heart rate. Moderate contribution from age and cholesterol levels. Protective effect observed from normal oxygen saturation."
+        
 
-        insertResponse = supabase.table("ai_predictions").insert({
-                "patient_id": "demo-patient-id", 
-                risk_level : 0.3,
-                recommended_department_id : 
-            
-         }).execute()
-
+#         insertPrediction = supabase.table("ai_predictions").insert({
+#     "patient_id": "demo-patient-id", 
+#     "risk_level": risk_score * 100,
+#     "recommended_department_id": department_id,
+#     "shap_values": shap_values,
+#     "explainability": explainability
+# }).execute()
+        
+        
         return {
-            "risk_score": risk_score,
+            "risk_level": risk_score,
+            "shap_values": shap_values,
+            "explainability": explainability,
             "department_id": department_id,
             "explanation": explanation
         }

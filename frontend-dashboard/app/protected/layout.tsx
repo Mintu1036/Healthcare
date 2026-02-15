@@ -42,27 +42,6 @@ export default function ProtectedLayout({
         </div>
       </div>
 
-      {/* Simplified Footer */}
-      <footer className="w-full border-t border-slate-100 bg-white py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-sm text-slate-400">
-            &copy; 2026 HealthPortal. All rights reserved.
-          </p>
-          
-          <div className="flex items-center gap-6">
-            <ThemeSwitcher />
-            <div className="h-4 w-[1px] bg-slate-200" />
-            <a
-              href="https://supabase.com"
-              target="_blank"
-              className="text-xs font-semibold text-slate-400 hover:text-blue-600 transition-colors"
-              rel="noreferrer"
-            >
-              Powered by Supabase
-            </a>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

@@ -1,0 +1,10 @@
+numpy>=1.23.0
+pandas>=1.5.0
+scikit-learn>=1.2.0
+joblib>=1.2.0
+shap>=0.42.0
+matplotlib>=3.6.0
+transformers>=4.35.0
+torch>=2.0.0
+groq>=0.4.0
+python-dotenv>=1.0.0

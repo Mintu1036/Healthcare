@@ -52,7 +52,8 @@ export async function POST(req: NextRequest) {
         systolic_bp,
         diastolic_bp,
         temperature,
-        pre_existing_conditions
+        pre_existing_conditions,
+        patient_id : patient_id || "unknown" // Fallback for missing patient_id
       })
     })
 

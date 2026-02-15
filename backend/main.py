@@ -10,6 +10,11 @@ import pdfplumber
 from io import BytesIO
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+import json
+import pandas as pd
+from zeroshot import *
+from mplinf import *
+from explain import generate_explanation_structured
 
 
 # 🔹 Load .env
@@ -116,6 +121,7 @@ class TriageInput(BaseModel):
     diastolic_bp: int | None = None
     temperature: float | None = None
     pre_existing_conditions: str | None = None
+    patient_id: str | None = None
 
 
 
@@ -125,56 +131,58 @@ class TriageInput(BaseModel):
 @app.post("/triage")
 def triage(data: TriageInput):
     try:
-        risk_score = 20
 
-        # 🔹 semi-realistic dummy logic
-        if data.heart_rate and data.heart_rate > 110:
-            risk_score += 25
-
-        if data.temperature and data.temperature > 38:
-            risk_score += 20
-
-        if data.systolic_bp and data.systolic_bp > 160:
-            risk_score += 20
-
+        fetchageandgender = supabase.table("patients").select("age, gender").eq("patient_id", data.patient_id).execute()
+        # console.log("fetchageandgender", fetchageandgender)
+        text = ""
         if data.symptoms:
-            symptoms_lower = [s.lower() for s in data.symptoms]
+            text += data.symptoms + " "
+        if data.pre_existing_conditions:
+            text += data.pre_existing_conditions
+        if fetchageandgender.data and len(fetchageandgender.data) > 0:  
+            age = fetchageandgender.data[0].get("age")
+            gender = fetchageandgender.data[0].get("gender")
+        vitals = {
+            "Age" : age,
+            "Sex" : 1 if gender == "Male" else 0,
+            "Heart_Rate": data.heart_rate,
+            "Systolic_BP": data.systolic_bp,
+            "Diastolic_BP": data.diastolic_bp,
+            "Temperature": data.temperature,
+            
+        }
 
-            if "chest pain" in symptoms_lower:
-                risk_score += 30
+        zeroshot_score = compute_risk_score(text)
+        vitals_score, contributions = run_mlp_inference(pd.DataFrame([vitals]))
 
-            if "breathlessness" in symptoms_lower:
-                risk_score += 25
+        final_Score = 0.5 * zeroshot_score[0] + 0.5 * vitals_score
 
-            if "dizziness" in symptoms_lower:
-                risk_score += 10
+        print(zeroshot_score[1])
+        print("vitals Score:", vitals_score)
+        print("Zeroshot Score:", zeroshot_score[0])
+        print("Final Combined Risk Score:", final_Score)
 
-        risk_score = min(risk_score, 100)
+        # ----------------------------
+        # Generate Final Structured Output
+        # ----------------------------
 
-        department_id = random.choice(DEPARTMENT_IDS)
+        final_json = generate_explanation_structured(
+            text=text,
+            zeroshot_score=zeroshot_score,
+            vitals_score=vitals_score,
+            contributions=contributions,
+            final_score=final_Score
+        )
 
-        explanation = "Risk estimated from symptoms and available vitals."
-
-        shap_values = [12, -5, 18, 7, 22, 3]
-        explainability = "Elevated risk primarily driven by high systolic blood pressure and irregular heart rate. Moderate contribution from age and cholesterol levels. Protective effect observed from normal oxygen saturation."
-        
-
-#         insertPrediction = supabase.table("ai_predictions").insert({
-#     "patient_id": "demo-patient-id", 
-#     "risk_level": risk_score * 100,
-#     "recommended_department_id": department_id,
-#     "shap_values": shap_values,
-#     "explainability": explainability
-# }).execute()
-        
+        print("\nFinal Structured Output:\n")
+        print(json.dumps(final_json, indent=2))
         
         return {
-            "risk_level": risk_score,
-            "shap_values": shap_values,
-            "explainability": explainability,
-            "department_id": department_id,
-            "explanation": explanation
-        }
+    "risk_level": final_json["risk_score"],
+    "shap_values": final_json["shap_values"],
+    "explainability": final_json["explainability"],
+    "department_id": final_json["recommended_department"],
+}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

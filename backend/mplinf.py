@@ -41,16 +41,16 @@ def run_mlp_inference(sample_df, visualize=True):
     # ----------------------------
     # Optional Visualization
     # ----------------------------
-    if visualize:
-        explanation = shap.Explanation(
-            values=shap_values[0],
-            base_values=explainer.expected_value,
-            data=sample_df.iloc[0].values,
-            feature_names=sample_df.columns
-        )
+    # if visualize:
+    #     explanation = shap.Explanation(
+    #         values=shap_values[0],
+    #         base_values=explainer.expected_value,
+    #         data=sample_df.iloc[0].values,
+    #         feature_names=sample_df.columns
+    #     )
 
-        shap.plots.waterfall(explanation)
-        plt.show()
+    #     shap.plots.waterfall(explanation)
+    #     plt.show()
 
     return prediction, contributions
 

@@ -289,18 +289,12 @@ export default function PatientDashboard() {
             {/* RESULTS VIEW */}
             {triageResult && (
               <div className={`mt-8 p-6 border rounded-2xl transition-all animate-in zoom-in-95 duration-300 ${riskColor}`}>
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-[10px] font-black uppercase tracking-widest opacity-70">AI Diagnostic Result</span>
-                  <span className="text-xs font-bold px-2 py-1 rounded bg-white/50">{triageResult.department_id}</span>
+
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-70">Thank You! We will allot you with a Physician as aoon as possible!</span>
+
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-black">{triageResult.risk_score}</span>
-                  <span className="text-sm font-bold opacity-80">/ 100 Risk Score</span>
-                </div>
-                <p className="mt-4 text-sm leading-relaxed font-medium opacity-90 italic">
-                  &ldquo;{triageResult.explanation}&rdquo;
-                </p>
-              </div>
+  
+
             )}
           </div>
         </section>

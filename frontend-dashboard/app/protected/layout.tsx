@@ -21,7 +21,7 @@ export default function ProtectedLayout({
                 <Activity className="w-5 h-5 text-white" />
               </div>
               <span className="font-bold text-slate-900 tracking-tight text-lg">
-                Health<span className="text-blue-600">Portal</span>
+                Nalam<span className="text-blue-600">AI</span>
               </span>
             </Link>
           </div>

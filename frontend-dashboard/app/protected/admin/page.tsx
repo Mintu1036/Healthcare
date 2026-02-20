@@ -116,59 +116,14 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 bg-slate-50/50 overflow-hidden">
-        {/* <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-30">
-          <button onClick={() => setOpen(true)} className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg">
-            <Menu size={20} />
-          </button>
-          
-          <div className="ml-auto flex items-center gap-5">
-            <button className="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
-              <Bell size={20} />
-              <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
-            <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-semibold leading-none">{user?.name || "Jane Doe"}</p>
-                <p className="text-xs text-slate-500 mt-1">{user?.email || "jane.doe@example.com"}</p>
-              </div>
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-400 shadow-md flex items-center justify-center text-white text-sm font-bold">
-                JD
-              </div>
-            </div>
-          </div>
-        </header> */}
+
 
         <div className="flex-1 overflow-y-auto p-8 lg:p-12">
           <div className="max-w-6xl mx-auto">
-            {/* <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Overview</h1>
-                <p className="text-slate-500 mt-1">Real-time departmental performance metrics.</p>
-              </div>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-blue-200 transition-all active:scale-95">
-                Download Report
-              </button>
-            </div> */}
-
-            {/* Stats Cards
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                { label: 'Total Revenue', value: '$12,800', trend: '+4.3%', color: 'text-green-500' },
-                { label: 'Active Tasks', value: '42', trend: '-2.1%', color: 'text-red-500' },
-                { label: 'Efficiency', value: '94.2%', trend: '+0.8%', color: 'text-green-500' },
-              ].map((stat, i) => (
-                <div key={i} className="bg-white p-6 rounded-3xl border border-white shadow-sm hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300">
-                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">{stat.label}</p>
-                  <div className="flex items-end justify-between mt-3">
-                    <p className="text-3xl font-bold text-slate-800">{stat.value}</p>
-                    <span className={`${stat.color} text-sm font-bold bg-slate-50 px-2 py-1 rounded-lg`}>{stat.trend}</span>
-                  </div>
-                </div>
-              ))}
-            </div> */}
+           
 
             {/* Placeholder for Charts */}
-            <div className="mt-8">
+            <div className="">
               <DepartmentDetails departmentId={selectedId} />
             </div>
 

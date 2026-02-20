@@ -1,49 +1,46 @@
-# combine.py
-
 import json
 import pandas as pd
-from zeroshot import *
-from mplinf import *
+from zeroshot import compute_risk_score
+from mplinf import run_mlp_inference
 from explain import generate_explanation_structured
 
-text = "Patient reports mild sore throat, slight nasal congestion, and occasional dry cough for the past two days. No fever or breathing difficulty."
 
-vitals = {
-    "Age": 24,
-    "Sex": 0,
-    "Heart_Rate": 76,
-    "Systolic_BP": 112,
-    "Diastolic_BP": 72,
-    "Temperature": 36.9
-}
+def run_combined_risk_assessment(text: str, vitals: dict):
+    """
+    Runs zeroshot + vitals MLP model and returns structured risk assessment.
 
-# ----------------------------
-# Run Models (UNCHANGED)
-# ----------------------------
+    Args:
+        text (str): Patient symptom description
+        vitals (dict): Dictionary with keys:
+            Age, Sex, Heart_Rate, Systolic_BP, Diastolic_BP, Temperature
 
-zeroshot_score = compute_risk_score(text)
-vitals_score, contributions, base_value = run_mlp_inference(pd.DataFrame([vitals]))
+    Returns:
+        dict: Final structured JSON output
+    """
 
-final_Score = 0.5 * zeroshot_score[0] + 0.5 * vitals_score
+    # ----------------------------
+    # Run Models
+    # ----------------------------
 
-print(zeroshot_score[1])
-print("vitals Score:", vitals_score)
-print("Zeroshot Score:", zeroshot_score[0])
-print("Final Combined Risk Score:", final_Score)
+    zeroshot_score = compute_risk_score(text)
 
-# ----------------------------
-# Generate Final Structured Output
-# ----------------------------
+    vitals_df = pd.DataFrame([vitals])
+    vitals_score, contributions, base_value = run_mlp_inference(vitals_df)
 
-final_json = generate_explanation_structured(
-    text,
-    zeroshot_score,
-    vitals_score,
-    contributions,
-    final_Score,
-    base_value,
-    vitals
-)
+    final_score = 0.5 * zeroshot_score[0] + 0.5 * vitals_score
 
-print("\nFinal Structured Output:\n")
-print(json.dumps(final_json, indent=2))
+    # ----------------------------
+    # Generate Structured Output
+    # ----------------------------
+
+    final_json = generate_explanation_structured(
+        text,
+        zeroshot_score,
+        vitals_score,
+        contributions,
+        final_score,
+        base_value,
+        vitals
+    )
+
+    return final_json

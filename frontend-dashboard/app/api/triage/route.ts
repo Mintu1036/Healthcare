@@ -62,7 +62,10 @@ export async function POST(req: NextRequest) {
       throw new Error(`AI Service failed (${aiRes.status}): ${errorText}`)
     }
 
+
     const aiData = await aiRes.json()
+
+    console.log("AI service returned this JSON:", aiData)
     const { risk_level, department_id, explainability,shap_values } = aiData
     console.log("AI Response:", aiData, "for triage ID:", triage.triage_id)
 

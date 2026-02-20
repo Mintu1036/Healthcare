@@ -12,6 +12,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import json
 import pandas as pd
+from combine import run_combined_risk_assessment
 from zeroshot import *
 from mplinf import *
 from explain import generate_explanation_structured
@@ -131,7 +132,8 @@ class TriageInput(BaseModel):
 @app.post("/triage")
 def triage(data: TriageInput):
     try:
-
+        age = None
+        gender = None
         fetchageandgender = supabase.table("patients").select("age, gender").eq("patient_id", data.patient_id).execute()
         # console.log("fetchageandgender", fetchageandgender)
         text = ""
@@ -151,38 +153,13 @@ def triage(data: TriageInput):
             "Temperature": data.temperature,
             
         }
-
-        zeroshot_score = compute_risk_score(text)
-        vitals_score, contributions = run_mlp_inference(pd.DataFrame([vitals]))
-
-        final_Score = 0.5 * zeroshot_score[0] + 0.5 * vitals_score
-
-        print(zeroshot_score[1])
-        print("vitals Score:", vitals_score)
-        print("Zeroshot Score:", zeroshot_score[0])
-        print("Final Combined Risk Score:", final_Score)
-
-        # ----------------------------
-        # Generate Final Structured Output
-        # ----------------------------
-
-        final_json = generate_explanation_structured(
-            text=text,
-            zeroshot_score=zeroshot_score,
-            vitals_score=vitals_score,
-            contributions=contributions,
-            final_score=final_Score
-        )
-
-        print("\nFinal Structured Output:\n")
-        print(json.dumps(final_json, indent=2))
         
-        return {
-    "risk_level": final_json["risk_score"],
-    "shap_values": final_json["shap_values"],
-    "explainability": final_json["explainability"],
-    "department_id": final_json["recommended_department"],
-}
+
+        print("vitals here", vitals)
+        result = run_combined_risk_assessment(text, vitals)    
+        print(json.dumps(result, indent=2))
+       
+        return result
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

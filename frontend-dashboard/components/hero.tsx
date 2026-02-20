@@ -28,7 +28,7 @@ export function Hero() {
       {/* Header */}
       <div className="max-w-xl text-center space-y-3 mb-16">
         <h1 className="text-4xl font-bold tracking-tight text-slate-900">
-          Welcome to <span className="text-blue-600 text-shadow-sm">Portal</span>
+          Welcome to <span className="text-blue-600 text-shadow-sm">Nalam AI</span>
         </h1>
         <p className="text-slate-500 text-base font-medium">
           Select your role to access the dashboard
